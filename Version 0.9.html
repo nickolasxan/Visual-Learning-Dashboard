@@ -1,0 +1,1244 @@
+Version 0.9
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Learning Hub Pro</title>
+    <style>
+        /* Modern Reset and Theme Variables */
+        :root {
+            --bg-color: #f4f7f6;
+            --sidebar-bg: #2c3e50;
+            --sidebar-hover: #34495e;
+            --primary: #1abc9c;
+            --primary-dark: #16a085;
+            --text-main: #333;
+            --card-bg: #ffffff;
+            --border-color: #eee;
+            --column-bg: #fafbfc;
+            --accent-orange: #e67e22;
+            --accent-purple: #9b59b6;
+            --danger-color: #e74c3c;
+            --success-color: #2ecc71;
+        }
+
+        /* Dark Theme Variables */
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --sidebar-bg: #1e1e1e;
+            --sidebar-hover: #2d2d2d;
+            --text-main: #e0e0e0;
+            --card-bg: #1d1d1d;
+            --border-color: #333;
+            --column-bg: #252525;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Header */
+        header {
+            background-color: #1a252f;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: #bdc3c7;
+            font-size: 0.9rem;
+        }
+
+        /* Main Layout */
+        .container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar Navigation */
+        aside {
+            width: 300px;
+            background-color: var(--sidebar-bg);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            transition: background-color 0.3s ease;
+        }
+
+        aside h2 {
+            color: #ecf0f1;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+
+        /* Search Bar */
+        .search-box {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 5px;
+            border: none;
+            background-color: #34495e;
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .search-box::placeholder {
+            color: #95a5a6;
+        }
+
+        /* Sort Container Controls */
+        .sort-container {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .sort-container label {
+            color: #95a5a6;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sort-select {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 5px;
+            border: 1px solid #34495e;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            font-size: 0.85rem;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .subject-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .subject-btn {
+            background-color: transparent;
+            color: #bdc3c7;
+            border: 1px solid #34495e;
+            padding: 12px 15px;
+            font-size: 0.95rem;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .subject-btn:hover {
+            background-color: var(--sidebar-hover);
+            color: white;
+        }
+
+        .subject-btn.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Home Button Specific Styling */
+        .home-btn {
+            border-color: var(--accent-orange);
+            color: var(--accent-orange);
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .home-btn:hover {
+            background-color: var(--accent-orange);
+            color: white;
+        }
+
+        /* Utility Buttons Styling */
+        .util-sidebar-btn {
+            border-color: #3498db;
+            color: #3498db;
+            font-weight: bold;
+        }
+        .util-sidebar-btn:hover {
+            background-color: #3498db;
+            color: white;
+        }
+
+        /* Theme Toggle Button Styling */
+        .theme-btn {
+            border-color: #f1c40f;
+            color: #f1c40f;
+            font-weight: bold;
+            margin-top: auto;
+            text-align: center;
+            justify-content: center;
+        }
+        .theme-btn:hover {
+            background-color: #f1c40f;
+            color: #1a252f;
+        }
+
+        /* Timer Widget inside Sidebar */
+        .timer-widget {
+            background-color: #34495e;
+            border-radius: 6px;
+            padding: 12px;
+            color: white;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .timer-display {
+            font-size: 1.6rem;
+            font-weight: bold;
+            margin: 5px 0;
+            font-family: monospace;
+            color: #f1c40f;
+        }
+        .timer-controls {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+        .timer-btn {
+            background: #2c3e50;
+            border: none;
+            color: white;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .timer-btn:hover {
+            background: var(--primary);
+        }
+
+        /* Content Display Area */
+        main {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            position: relative;
+        }
+
+        .content-card {
+            background: var(--card-bg);
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            max-width: 1000px;
+            width: 100%;
+            display: none; 
+            position: relative;
+            transition: background-color 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        .content-card.active-content {
+            display: block;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        /* Grid Layout */
+        .grid-layout {
+            display: flex; 
+            flex-wrap: wrap;
+            gap: 25px; 
+            text-align: left;
+        }
+
+        .column {
+            flex: 1;
+            min-width: 280px;
+            background: var(--column-bg);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            position: relative;
+        }
+
+        /* Card Bookmark Action Link Pin */
+        .bookmark-pin {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.05);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+            z-index: 10;
+        }
+        .bookmark-pin:hover {
+            background: rgba(0,0,0,0.1);
+        }
+        .column.pinned .bookmark-pin {
+            background: var(--accent-orange);
+            color: white;
+        }
+
+        /* PDF Viewer Frame Integration Styling */
+        .pdf-viewer {
+            width: 100%;
+            height: 550px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+        }
+
+        .content-card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+            cursor: zoom-in;
+            transition: transform 0.2s ease;
+        }
+
+        .content-card img:hover {
+            transform: scale(1.02);
+        }
+
+        .content-card h3 {
+            margin-bottom: 15px;
+            color: var(--text-main);
+            font-size: 1.2rem;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Button Action Container */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            margin-top: auto;
+        }
+
+        /* Direct Download Link Button Styling */
+        .download-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            font-size: 0.85rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+            flex: 1;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .download-btn:hover { 
+            background-color: #2980b9; 
+        }
+
+        /* New External Textbook Button Styling */
+        .textbook-btn {
+            background-color: var(--accent-purple);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            font-size: 0.85rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+            flex: 1;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .textbook-btn:hover {
+            background-color: #8e44ad;
+        }
+
+        /* Welcome Layout Styles */
+        .home-welcome-zone {
+            text-align: center;
+            margin-top: 20px;
+            max-width: 750px;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .welcome-banner {
+            width: 100%;
+            max-height: 240px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+
+        .home-welcome-zone h2 {
+            color: var(--text-main);
+            margin-bottom: 10px;
+            font-size: 1.6rem;
+        }
+
+        .home-welcome-zone p {
+            color: #7f8c8d;
+            font-size: 1.05rem;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .quick-stats-grid {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 20px 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            border: 1px solid var(--border-color);
+            flex: 1;
+            min-width: 160px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .stat-card h4 {
+            color: #1abc9c;
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* Pinned Deck Section Home Tray */
+        .pinned-assets-tray {
+            margin-top: 35px;
+            width: 100%;
+            text-align: left;
+            display: none;
+        }
+        .pinned-assets-tray h3 {
+            font-size: 1.2rem;
+            color: var(--text-main);
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 5px;
+        }
+        .pinned-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        /* Interactive Quiz Layout Engine styling sheets */
+        .quiz-container {
+            width: 100%;
+            background: var(--column-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 15px;
+        }
+        .quiz-question {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-main);
+        }
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .quiz-opt-label {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 12px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.2s, border 0.2s, color 0.2s;
+        }
+        .quiz-opt-label:hover {
+            background: var(--sidebar-hover);
+            color: white;
+        }
+        
+        /* Interactive Visual Option Color Correction Engine Classes */
+        .quiz-opt-label.visual-correct {
+            background-color: rgba(46, 204, 113, 0.25) !important;
+            border-color: var(--success-color) !important;
+            color: var(--success-color) !important;
+            font-weight: bold;
+        }
+        .quiz-opt-label.visual-wrong {
+            background-color: rgba(231, 76, 60, 0.25) !important;
+            border-color: var(--danger-color) !important;
+            color: var(--danger-color) !important;
+        }
+
+        .quiz-opt-input {
+            cursor: pointer;
+        }
+        .quiz-feedback {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-weight: 500;
+            display: none;
+        }
+        .quiz-feedback.correct {
+            background-color: rgba(46, 204, 113, 0.15);
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+            display: block;
+        }
+        .quiz-feedback.wrong {
+            background-color: rgba(231, 76, 60, 0.15);
+            color: var(--danger-color);
+            border: 1px solid var(--danger-color);
+            display: block;
+        }
+        .quiz-control-group {
+            display: flex;
+            gap: 10px;
+        }
+        .quiz-nav-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .quiz-nav-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Split-screen Scratch Scratchpad Module Workspace Layout */
+        .workspace-panel {
+            width: 100%;
+            background: var(--column-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+        .workspace-panel h3 {
+            text-align: left;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+        .scratch-textarea {
+            width: 100%;
+            height: 150px;
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 0.95rem;
+            resize: vertical;
+            outline: none;
+            font-family: inherit;
+        }
+        .notepad-status {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        /* Lightbox Fullscreen Overlay */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            align-items: center;
+            justify-content: center;
+            cursor: zoom-out;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 4px;
+            box-shadow: 0 0 25px rgba(0,0,0,0.5);
+            animation: zoomIn 0.2s ease;
+        }
+
+        /* Responsive UI Mobile Layout Adjustment */
+        @media (max-width: 768px) {
+            body {
+                height: auto;
+            }
+            .container {
+                flex-direction: column;
+                overflow: visible;
+            }
+            aside {
+                width: 100%;
+                height: auto;
+                overflow: visible;
+            }
+            main {
+                padding: 15px;
+                overflow-y: visible;
+            }
+            .theme-btn {
+                margin-top: 10px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes zoomIn {
+            from { transform: scale(0.95); }
+            to { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Visual Learning Dashboard Pro</h1>
+        <p>Your ultimate formula sheet & study companion hub</p>
+    </header>
+
+    <div class="container">
+        <aside>
+            <h2>Navigation</h2>
+            <button class="subject-btn home-btn" onclick="showFirstPage()">🏠 Home Page</button>
+            <button class="subject-btn util-sidebar-btn" onclick="showSubject('QuizWorkspace', this)">📝 Self-Review Quiz</button>
+
+            <h2>Subjects</h2>
+            <input type="text" id="searchBar" class="search-box" placeholder="Search subject..." onkeyup="filterSubjects()">
+            
+            <div class="sort-container">
+                <label for="sortSelect">Sort By:</label>
+                <select id="sortSelect" class="sort-select" onchange="sortSubjects()">
+                    <option value="default">Default Order</option>
+                    <option value="popular">Popularity (High to Low)</option>
+                    <option value="asc">Alphabetical (A-Z)</option>
+                    <option value="desc">Alphabetical (Z-A)</option>
+                </select>
+            </div>
+            
+            <div class="subject-list" id="btnContainer">
+                <button class="subject-btn sortable-item" data-popularity="3" onclick="showSubject('Physics', this)">Physics <span>⚙️</span></button>
+                <button class="subject-btn sortable-item" data-popularity="4" onclick="showSubject('Mathematics', this)">Mathematics <span>📐</span></button>
+                <button class="subject-btn sortable-item" data-popularity="2.5" onclick="showSubject('Algebra', this)">Algebra <span>➗</span></button>
+                <button class="subject-btn sortable-item" data-popularity="1" onclick="showSubject('Geometry', this)">Geometry <span>⬡</span></button>
+                <button class="subject-btn sortable-item" data-popularity="2" onclick="showSubject('Chemistry', this)">Chemistry <span>🧪</span></button>
+            </div>
+
+            <h2>Focus Session</h2>
+            <div class="timer-widget">
+                <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; opacity:0.8;" id="timerLabelContext">Timer Active</div>
+                <div class="timer-display" id="sessionTimerDisplay">25:00</div>
+                <div class="timer-controls">
+                    <button class="timer-btn" onclick="controlTimer('start')">Start</button>
+                    <button class="timer-btn" onclick="controlTimer('pause')">Pause</button>
+                    <button class="timer-btn" onclick="controlTimer('reset')">Reset</button>
+                </div>
+            </div>
+
+            <button class="subject-btn theme-btn" onclick="toggleTheme()">🌓 Toggle Theme</button>
+        </aside>
+
+        <main>
+            <div id="placeholder-text" class="home-welcome-zone">
+                <img src="./Home page/Home.png" alt="Dashboard Hub Illustration" class="welcome-banner">
+                <h2>Welcome to your Learning Dashboard</h2>
+                <p>Select a subject category from the left sidebar panel to access interactive formula sheets, view embedded local PDF summaries, download original study graphics, or jump directly to specific web textbook platforms.</p>
+                
+                <div class="quick-stats-grid">
+                    <div class="stat-card">
+                        <h4>5 Active</h4>
+                        <p>Core Categories</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Multi-Format</h4>
+                        <p>Images & PDF Files</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>11th Grade</h4>
+                        <p>Curriculum Targeted</p>
+                    </div>
+                </div>
+
+                <div class="pinned-assets-tray" id="pinnedTrayDeck">
+                    <h3>📌 Quick-Access Bookmarks</h3>
+                    <div class="pinned-grid" id="pinnedGridTarget"></div>
+                </div>
+            </div>
+
+            <div id="Physics" class="content-card">
+                <div class="grid-layout">
+                    <div class="column" data-card-uid="phys-sheet1">
+                        <button class="bookmark-pin" onclick="togglePinCard('phys-sheet1')">⭐</button>
+                        <img src="./Physics/Physics.png" alt="Τυπολόγιο Φυσικής 1" onclick="openLightbox(this.src)">
+                        <h3>Φυσική - Τυπολόγιο 1</h3>
+                        <div class="btn-group">
+                            <a href="./Physics/Physics.png" download="Physics_Typologio_1.png" class="download-btn">Download</a>
+                            <a href="https://ebooks.edu.gr/ebooks/v/html/8547/2684/Fysiki_B-Lykeiou-ThSp_html-empl/" target="_blank" class="textbook-btn">📖 Textbook</a>
+                        </div>
+                    </div>
+                    <div class="column" data-card-uid="phys-sheet2">
+                        <button class="bookmark-pin" onclick="togglePinCard('phys-sheet2')">⭐</button>
+                        <img src="./Physics/Physics 2.png" alt="Τυπολόγιο Φυσικής 2" onclick="openLightbox(this.src)">
+                        <h3>Φυσική - Τυπολόγιο 2</h3>
+                        <div class="btn-group">
+                            <a href="./Physics/Physics 2.png" download="Physics_Typologio_2.png" class="download-btn">Download</a>
+                            <a href="https://ebooks.edu.gr/ebooks/v/html/8547/2684/Fysiki_B-Lykeiou-ThSp_html-empl/" target="_blank" class="textbook-btn">📖 Textbook</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="Mathematics" class="content-card">
+                <div class="grid-layout">
+                    <div class="column" data-card-uid="math-sheet1">
+                        <button class="bookmark-pin" onclick="togglePinCard('math-sheet1')">⭐</button>
+                        <img src="./Math/Math.jpg" alt="Τυπολόγιο Μαθηματικών 1" onclick="openLightbox(this.src)">
+                        <h3>Μαθηματικά - Τυπολόγιο 1</h3>
+                        <div class="btn-group">
+                            <a href="./Math/Math.jpg" download="Math_Typologio_1.jpg" class="download-btn">Download</a>
+                            <a href="https://ebooks.edu.gr/ebooks/v/html/8547/2754/Mathimatika-B-Lykeiou-ThSp_html-apli/" target="_blank" class="textbook-btn">📖 Textbook</a>
+                        </div>
+                    </div>
+                    <div class="column" data-card-uid="math-sheet2">
+                        <button class="bookmark-pin" onclick="togglePinCard('math-sheet2')">⭐</button>
+                        <img src="./Math/Math 2.jpg" alt="Τυπολόγιο Μαθηματικών 2" onclick="openLightbox(this.src)">
+                        <h3>Μαθηματικά - Τυπολόγιο 2</h3>
+                        <div class="btn-group">
+                            <a href="./Math/Math 2.jpg" download="Math_Typologio_2.jpg" class="download-btn">Download</a>
+                            <a href="https://ebooks.edu.gr/ebooks/v/html/8547/2754/Mathimatika-B-Lykeiou-ThSp_html-apli/" target="_blank" class="textbook-btn">📖 Textbook</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="Algebra" class="content-card">
+                <div class="grid-layout">
+                    <div class="column" data-card-uid="algebra-sheet1">
+                        <button class="bookmark-pin" onclick="togglePinCard('algebra-sheet1')">⭐</button>
+                        <img src="./Algebra/Algenra.jpg" alt="Τυπολόγιο Άλγεβρας 1" onclick="openLightbox(this.src)">
+                        <h3>Άλγεβρα - Τυπολόγιο 1</h3>
+                        <div class="btn-group">
+                            <a href="./Algebra/Algenra.jpg" download="Algebra_Typologio_1.jpg" class="download-btn">Download</a>
+                            <a href="https://ebooks.edu.gr/ebooks/v/html/8547/2744/Algevra_B-Lykeiou_html-apli/" target="_blank" class="textbook-btn">📖 Textbook</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="Geometry" class="content-card">
+                <div class="grid-layout">
+                    <div class="column" data-card-uid="geometry-sheet1">
+                        <button class="bookmark-pin" onclick="togglePinCard('geometry-sheet1')">⭐</button>
+                        <img src="./Geometry/Geometry.png" alt="Τυπολόγιο Γεωμετρίας 1" onclick="openLightbox(this.src)">
+                        <h3>Γεωμετρία - Τυπολόγιο 1</h3>
+                        <div class="btn-group">
+                            <a href="./Geometry/Geometry.png" download="Geometry_Typologio_1.png" class="download-btn">Download</a>
+                            <a href="https://ebooks.edu.gr/ebooks/v/html/8547/2694/Geometria_B-Lykeiou_html-empl/" target="_blank" class="textbook-btn">📖 Textbook</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="Chemistry" class="content-card">
+                <div class="grid-layout">
+                    <div class="column" style="width: 100%; flex: none;" data-card-uid="chemistry-pdf">
+                        <button class="bookmark-pin" onclick="togglePinCard('chemistry-pdf')">⭐</button>
+                        <iframe src="./Chemistry/Chemistry.pdf" class="pdf-viewer"></iframe>
+                        <h3>Χημεία - Τυπολόγιο & Σημειώσεις (PDF)</h3>
+                        <div class="btn-group">
+                            <a href="./Chemistry/Chemistry.pdf" download="Chemistry_Notes.pdf" class="download-btn">Download</a>
+                            <a href="https://ebooks.edu.gr/ebooks/handle/8547/2419" target="_blank" class="textbook-btn">📖 Textbook</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="QuizWorkspace" class="content-card">
+                <h2>📝 Interactive Dynamic Knowledge Assessment</h2>
+                <p style="color:#7f8c8d; font-size:0.9rem; margin-bottom:20px;">Review core 11th-grade syllabus parameters across physical and mathematical logic equations.</p>
+                
+                <div class="quiz-container">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.85rem; color:var(--primary); font-weight:bold;">
+                        <span id="quizSubjectContext">Subject Context</span>
+                        <span id="quizProgressTracker">Question 1 of 8</span>
+                    </div>
+                    <div class="quiz-question" id="quizQuestionTargetText">Loading interactive testing metric item parameters...</div>
+                    <div class="quiz-options" id="quizOptionsStackBody"></div>
+                    <div class="quiz-feedback" id="quizFeedbackBox"></div>
+                    
+                    <div class="quiz-control-group">
+                        <button class="quiz-nav-btn" id="quizSubmitActionBtn" onclick="verifyActiveQuizResponse()">Submit Answer</button>
+                        <button class="quiz-nav-btn" style="background:#7f8c8d;" id="quizNextActionBtn" onclick="advanceToNextQuizItem()">Next Question</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="workspace-panel">
+                <h3>🗒️ Interactive Equation & Notes Scratchpad</h3>
+                <textarea class="scratch-textarea" id="interactiveScratchpadInput" placeholder="Write out formulas, equations, or tasks here... Data is automatically saved locally inside your browser cache." onkeyup="cacheScratchpadContents()"></textarea>
+                <div class="notepad-status" id="scratchpadBackupNotification">Draft saved to browser storage context</div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="customLightbox" class="lightbox" onclick="closeLightbox()">
+        <img id="lightboxImg" src="" alt="Enlarged View">
+    </div>
+
+    <script>
+        // Store initial order layout arrays for 'Default Order' reset
+        const originalOrderElements = Array.from(document.querySelectorAll('.sortable-item'));
+        
+        // Local Browser System Storage State Keys Array Declarations Config Matrix
+        let bookmarkedCardUids = JSON.parse(localStorage.getItem('hubBookmarkedCardUids')) || [];
+
+        // Interactive Assessment Framework Engine Memory Matrix Struct Object Dataset
+        const evaluationQuestionBank = [
+            {
+                subject: "Physics",
+                question: "Ποια είναι η μαθηματική έκφραση της καταστατικής εξίσωσης των ιδανικών αερίων;",
+                options: ["P · V = n · R · T", "P · F = m · a", "W = Q / t", "V = I · R"],
+                correctIndex: 0,
+                hint: "Η καταστατική εξίσωση συνδέει την πίεση, τον όγκο, την ποσότητα της ύλης και τη θερμοκρασία."
+            },
+            {
+                subject: "Mathematics",
+                question: "Σε κάθε ορθογώνιο τρίγωνο, ποια σχέση συνδέει τις πλευρές του σύμφωνα με το Πυθαγόρειο Θεώρημα;",
+                options: ["α = β + γ", "α² = β² + γ²", "α³ = β³ + γ³", "α · β = γ²"],
+                correctIndex: 1,
+                hint: "Το τετράγωνο της υποτείνουσας ισούται με το άθροισμα των τετραγώνων των δύο κάθετων πλευρών."
+            },
+            {
+                subject: "Algebra",
+                question: "Ποιος είναι ο τύπος υπολογισμού της Διακρίνουσας (Δ) μιας δευτεροβάθμιας εξίσωσης αx² + βx + γ = 0;",
+                options: ["Δ = β - 4αγ", "Δ = β² + 4αγ", "Δ = β² - 4αγ", "Δ = α² - 4βγ"],
+                correctIndex: 2,
+                hint: "Ο τύπος περιλαμβάνει το τετράγωνο του β μείον το τετραπλάσιο γινόμενο του α και του γ."
+            },
+            {
+                subject: "Geometry",
+                question: "Ποιος είναι ο τύπος για το εμβαδόν κύκλου ακτίνας r;",
+                options: ["E = 2πr", "E = πr²", "E = πr³", "E = 2πr²"],
+                correctIndex: 1,
+                hint: "Το εμβαδόν εξαρτάται από το τετράγωνο της ακτίνας επί τη σταθερά π."
+            },
+            {
+                subject: "Chemistry",
+                question: "Ποια είναι η τιμή της σταθεράς Avogadro (N_A) που καθορίζει τον αριθμό σωμαδίων ανά 1 mole ύλης;",
+                options: ["6.022 · 10²³", "3.141 · 10¹⁰", "9.81 · 10⁵", "1.602 · 10⁻¹⁹"],
+                correctIndex: 0,
+                hint: "Είναι ένας εξαιρετικά μεγάλος αριθμός που εκφράζει τα σωματίδια σε ένα mole."
+            },
+            {
+                subject: "Physics",
+                question: "Ποιος είναι ο τύπος για την Κινητική Ενέργεια (K) ενός σώματος μάζας m που κινείται με ταχύτητα v;",
+                options: ["K = m · v", "K = 1/2 · m · v²", "K = m · g · h", "K = F · d"],
+                correctIndex: 1,
+                hint: "Η κινητική ενέργεια είναι ανάλογη της μάζας και του τετραγώνου της ταχύτητας."
+            },
+            {
+                subject: "Algebra",
+                question: "Αν μια αριθμητική πρόοδος έχει πρώτο όρο α1 και διαφορά ω, ποιος είναι ο ν-οστός όρος (αν) της προόδου;",
+                options: ["αν = α1 + ν·ω", "αν = α1 · ω^(ν-1)", "αν = α1 + (ν-1)ω", "αν = (α1 + ω) · ν"],
+                correctIndex: 2,
+                hint: "Προσθέτουμε στον πρώτο όρο τη διαφορά ω πολλαπλασιασμένη επί ν μείον ένα."
+            },
+            {
+                subject: "Chemistry",
+                question: "Ποιο είναι το pH ενός εξαιρετικά ουδέτερου υδατικού διαλύματος στους 25°C;",
+                options: ["pH = 0", "pH = 14", "pH = 1", "pH = 7"],
+                correctIndex: 3,
+                hint: "Το καθαρό νερό έχει αυτή την τιμή pH, η οποία βρίσκεται ακριβώς στη μέση της κλίμακας."
+            }
+        ];
+
+        let activeQuizCursorIndex = 0;
+        let selectedQuizOptionToken = null;
+
+        // Timer State Tracking Workspace Machine Flags Engine Setup Variables
+        let timerClockThread = null;
+        let timerRemainingSeconds = 1500; 
+        let isTimerActive = false;
+
+        // On DOM Content Node Initialization Hooks Execute Thread Loop Start
+        document.addEventListener("DOMContentLoaded", function() {
+            applySavedThemeState();
+            renderActiveNotepadCachedContent();
+            synchronizePinnedElementsLocalStorageState();
+            initializeAssessmentQuizModule();
+        });
+
+        // Persistent Theme Loader Logic
+        function applySavedThemeState() {
+            const savedTheme = localStorage.getItem('hubPersistentTheme');
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+            } else {
+                document.body.removeAttribute('data-theme');
+            }
+        }
+
+        // Theme Toggle Controller Logic with browser-cache memory writing hooks
+        function toggleTheme() {
+            const currentTheme = document.body.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                document.body.removeAttribute('data-theme');
+                localStorage.setItem('hubPersistentTheme', 'light');
+            } else {
+                document.body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('hubPersistentTheme', 'dark');
+            }
+        }
+
+        // Sorting Engine Logic
+        function sortSubjects() {
+            const container = document.getElementById('btnContainer');
+            const sortValue = document.getElementById('sortSelect').value;
+            const items = Array.from(document.querySelectorAll('.sortable-item'));
+
+            if (sortValue === 'default') {
+                originalOrderElements.forEach(item => container.appendChild(item));
+                return;
+            }
+
+            items.sort((a, b) => {
+                if (sortValue === 'popular') {
+                    const popA = parseFloat(a.getAttribute('data-popularity')) || 0;
+                    const popB = parseFloat(b.getAttribute('data-popularity')) || 0;
+                    return popB - popA;
+                }
+
+                const textA = a.textContent.trim().toLowerCase();
+                const textB = b.textContent.trim().toLowerCase();
+                
+                if (sortValue === 'asc') {
+                    return textA.localeCompare(textB);
+                } else if (sortValue === 'desc') {
+                    return textB.localeCompare(textA);
+                }
+                return 0;
+            });
+
+            items.forEach(item => container.appendChild(item));
+        }
+
+        // Tab switching controller
+        function showSubject(subjectId, buttonElement) {
+            document.getElementById('placeholder-text').style.display = 'none';
+
+            const cards = document.querySelectorAll('.content-card');
+            cards.forEach(card => card.classList.remove('active-content'));
+
+            const buttons = document.querySelectorAll('.subject-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            const elementTarget = document.getElementById(subjectId);
+            if(elementTarget) {
+                elementTarget.classList.add('active-content');
+            }
+            if(buttonElement) {
+                buttonElement.classList.add('active');
+            }
+
+            document.querySelector('main').scrollTop = 0;
+        }
+
+        // Controller to return to the initial state (First Page)
+        function showFirstPage() {
+            document.getElementById('placeholder-text').style.display = 'block';
+
+            const cards = document.querySelectorAll('.content-card');
+            cards.forEach(card => card.classList.remove('active-content'));
+
+            const buttons = document.querySelectorAll('.subject-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            document.querySelector('main').scrollTop = 0;
+            synchronizePinnedElementsLocalStorageState();
+        }
+
+        // Live filtering Search logic
+        function filterSubjects() {
+            const input = document.getElementById('searchBar').value.toLowerCase();
+            const buttons = document.querySelectorAll('.sortable-item');
+            
+            buttons.forEach(btn => {
+                const text = btn.textContent.toLowerCase();
+                if(text.includes(input)) {
+                    btn.style.display = "flex";
+                } else {
+                    btn.style.display = "none";
+                }
+            });
+        }
+
+        // Zoom image features
+        function openLightbox(src) {
+            const lightbox = document.getElementById('customLightbox');
+            const lightboxImg = document.getElementById('lightboxImg');
+            lightboxImg.src = src;
+            lightbox.style.display = 'flex';
+        }
+
+        function closeLightbox() {
+            document.getElementById('customLightbox').style.display = 'none';
+        }
+
+        // Keyboard Action Hook: Global key down event logic listener (Escape Closes Lightbox)
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+
+        // Local Dynamic Favorites Bookmark Manager Logic Modules
+        function togglePinCard(cardUid) {
+            const targetIndex = bookmarkedCardUids.indexOf(cardUid);
+            if (targetIndex > -1) {
+                bookmarkedCardUids.splice(targetIndex, 1);
+            } else {
+                bookmarkedCardUids.push(cardUid);
+            }
+            localStorage.setItem('hubBookmarkedCardUids', JSON.stringify(bookmarkedCardUids));
+            synchronizePinnedElementsLocalStorageState();
+        }
+
+        function synchronizePinnedElementsLocalStorageState() {
+            const allColumns = document.querySelectorAll('.column');
+            allColumns.forEach(col => {
+                const uid = col.getAttribute('data-card-uid');
+                if (bookmarkedCardUids.includes(uid)) {
+                    col.classList.add('pinned');
+                } else {
+                    col.classList.remove('pinned');
+                }
+            });
+
+            const trayDeck = document.getElementById('pinnedTrayDeck');
+            const gridTarget = document.getElementById('pinnedGridTarget');
+            gridTarget.innerHTML = '';
+
+            if (bookmarkedCardUids.length === 0) {
+                trayDeck.style.display = 'none';
+                return;
+            }
+
+            trayDeck.style.display = 'block';
+            bookmarkedCardUids.forEach(uid => {
+                const sourceCard = document.querySelector(`[data-card-uid="${uid}"]`);
+                if (sourceCard) {
+                    const clonedStub = sourceCard.cloneNode(true);
+                    
+                    const internalPinBtn = clonedStub.querySelector('.bookmark-pin');
+                    if(internalPinBtn) {
+                        internalPinBtn.setAttribute('onclick', `togglePinCard('${uid}'); showFirstPage();`);
+                    }
+                    
+                    const images = clonedStub.querySelectorAll('img');
+                    images.forEach((img, index) => {
+                        const originalImg = sourceCard.querySelectorAll('img')[index];
+                        img.onclick = function() { openLightbox(originalImg.src); };
+                    });
+
+                    gridTarget.appendChild(clonedStub);
+                }
+            });
+        }
+
+        // Split-screen Scratch Scratchpad Module Data Cache Interface Controller Actions
+        function cacheScratchpadContents() {
+            const textToSave = document.getElementById('interactiveScratchpadInput').value;
+            localStorage.setItem('hubScratchpadCachedString', textToSave);
+            
+            const stateNotification = document.getElementById('scratchpadBackupNotification');
+            stateNotification.textContent = "Draft auto-saved securely.";
+            setTimeout(() => {
+                stateNotification.textContent = "Draft saved to browser storage context";
+            }, 2500);
+        }
+
+        function renderActiveNotepadCachedContent() {
+            const cachedStringData = localStorage.getItem('hubScratchpadCachedString');
+            if (cachedStringData !== null) {
+                document.getElementById('interactiveScratchpadInput').value = cachedStringData;
+            }
+        }
+
+        // Timer Control Frame Logic Engine
+        function controlTimer(actionCommand) {
+            const clockTextDisplay = document.getElementById('sessionTimerDisplay');
+            
+            if (actionCommand === 'start') {
+                if (isTimerActive) return;
+                isTimerActive = true;
+                timerClockThread = setInterval(() => {
+                    if (timerRemainingSeconds <= 0) {
+                        clearInterval(timerClockThread);
+                        isTimerActive = false;
+                        alert("Timer complete! Time to take a short study break.");
+                        timerRemainingSeconds = 1500;
+                        clockTextDisplay.textContent = "25:00";
+                        return;
+                    }
+                    timerRemainingSeconds--;
+                    const formatMins = Math.floor(timerRemainingSeconds / 60).toString().padStart(2, '0');
+                    const formatSecs = (timerRemainingSeconds % 60).toString().padStart(2, '0');
+                    clockTextDisplay.textContent = `${formatMins}:${formatSecs}`;
+                }, 1000);
+            } 
+            else if (actionCommand === 'pause') {
+                clearInterval(timerClockThread);
+                isTimerActive = false;
+            } 
+            else if (actionCommand === 'reset') {
+                clearInterval(timerClockThread);
+                isTimerActive = false;
+                timerRemainingSeconds = 1500;
+                clockTextDisplay.textContent = "25:00";
+            }
+        }
+
+        // Interactive Assessment Framework Engine Operations Block
+        function initializeAssessmentQuizModule() {
+            selectedQuizOptionToken = null;
+            const currentItem = evaluationQuestionBank[activeQuizCursorIndex];
+            
+            document.getElementById('quizSubjectContext').textContent = `Subject Area: ${currentItem.subject}`;
+            document.getElementById('quizProgressTracker').textContent = `Question ${activeQuizCursorIndex + 1} of ${evaluationQuestionBank.length}`;
+            document.getElementById('quizQuestionTargetText').textContent = currentItem.question;
+            
+            const optionsContainer = document.getElementById('quizOptionsStackBody');
+            optionsContainer.innerHTML = '';
+            
+            const feedbackBox = document.getElementById('quizFeedbackBox');
+            feedbackBox.className = 'quiz-feedback';
+            feedbackBox.textContent = '';
+            
+            currentItem.options.forEach((optionStr, index) => {
+                const labelElement = document.createElement('label');
+                labelElement.className = 'quiz-opt-label';
+                labelElement.id = `opt-label-${index}`;
+                
+                const inputElement = document.createElement('input');
+                inputElement.type = 'radio';
+                inputElement.name = 'quiz_radio_group';
+                inputElement.className = 'quiz-opt-input';
+                inputElement.value = index;
+                inputElement.onchange = function() {
+                    selectedQuizOptionToken = parseInt(this.value);
+                };
+                
+                labelElement.appendChild(inputElement);
+                labelElement.appendChild(document.createTextNode(` ${optionStr}`));
+                optionsContainer.appendChild(labelElement);
+            });
+
+            document.getElementById('quizNextActionBtn').style.display = 'none';
+            document.getElementById('quizSubmitActionBtn').style.display = 'inline-block';
+        }
+
+        function verifyActiveQuizResponse() {
+            if (selectedQuizOptionToken === null) {
+                alert("Please select an answer choice option configuration before compiling evaluation.");
+                return;
+            }
+            
+            const currentItem = evaluationQuestionBank[activeQuizCursorIndex];
+            const feedbackBox = document.getElementById('quizFeedbackBox');
+            
+            const optionLabels = document.querySelectorAll('.quiz-opt-label');
+            optionLabels.forEach(lbl => lbl.style.pointerEvents = 'none'); 
+
+            if (selectedQuizOptionToken === currentItem.correctIndex) {
+                feedbackBox.textContent = "✓ Correct! Excellent grasp of structural theoretical concepts.";
+                feedbackBox.className = "quiz-feedback correct";
+                document.getElementById(`opt-label-${selectedQuizOptionToken}`).classList.add('visual-correct');
+            } else {
+                feedbackBox.textContent = `✗ Incorrect. Hint: ${currentItem.hint}`;
+                feedbackBox.className = "quiz-feedback wrong";
+                document.getElementById(`opt-label-${selectedQuizOptionToken}`).classList.add('visual-wrong');
+                document.getElementById(`opt-label-${currentItem.correctIndex}`).classList.add('visual-correct');
+            }
+            
+            document.getElementById('quizSubmitActionBtn').style.display = 'none';
+            document.getElementById('quizNextActionBtn').style.display = 'inline-block';
+        }
+
+        function advanceToNextQuizItem() {
+            activeQuizCursorIndex = (activeQuizCursorIndex + 1) % evaluationQuestionBank.length;
+            initializeAssessmentQuizModule();
+        }
+    </script>
+
+</body>
+</html>
